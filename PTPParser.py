@@ -55,6 +55,24 @@ def announceMessageTest(packet, testType, gm):
           clockclass = ''
           clockaccuracy = ''
 
+          # Output for General Sync Test
+          if source == '16':
+              s = 'Source: Atomic Clock'
+          elif source == '32':
+              s = 'Source: GPS'
+          elif source == '48':
+              s = 'Source:Terrestrial'
+          elif source == '64':
+              s = 'Source: PTP'
+          elif source == '80':
+              s = 'Source: NTP'
+          elif source == '96':
+              s = 'Source: Handset'
+          elif source == '144':
+              s = 'Source: Other'
+          elif source == '160':
+              s = 'Source: Internal Oscillator'
+
 
 
 
@@ -121,8 +139,6 @@ def announceMessageTest(packet, testType, gm):
     query = "INSERT INTO Packet (Timestamp, SourceMac, clockClass, clockIdentity, clockSource, clockAccuracy) VALUES(%s,%s,%s,%s,%s,%s)"
     args = (str(packet.sniff_time),str(packet.eth.src),str(gm.clockclass),str(gm.clock_id),str(source),str(clockaccuracy))
 
-    #query = "INSERT INTO Packet (Timestamp, SourceMac) VALUES(%s,%s)"
-    #args = (str(packet.sniff_time),str(gm.clock_id))
 
     try:
         cursor = cnx.cursor()
@@ -186,6 +202,10 @@ def announceMessageTest(packet, testType, gm):
               output.write(s + '\n')
           elif gm.clockclass != '6':
               s = 'ALARM: ' + clockclass + " gm_clock_class: " + gm.clockclass+ ' GM Clock ID: ' + gm.clock_id;
+
+
+
+
 
           # TODO Check LS61 or LS59 has returned to false immediately after update of currentUTCSeconds
           if gm.utc_offset_flag == 1 and gm.ls_61 == 1:
