@@ -1,0 +1,78 @@
+
+body{
+    background: snow;
+    font-style: normal;
+}
+
+.navbar{
+
+      border-radius: 0;
+      background-color: firebrick;
+}
+
+h2{
+    text-align: center;
+    background-color: snow;
+    color: #122b40;
+}
+
+button{
+    margin: auto;
+    display: block;
+    font-style: normal;
+}
+
+.message th{
+
+    text-align: center;
+    font-size: large;
+    background-color: crimson;
+    color: whitesmoke;
+
+}
+
+.container-table {
+
+    display: table;
+    overflow-y: scroll;
+    height: 400px;
+
+}
+
+.container-table table {
+
+    font-style: oblique;
+    background-color: lightgoldenrodyellow;
+
+}
+
+.container-table table thead, tbody{
+
+    float: left;
+    width: 100%;
+}
+.container-table table tbody {
+
+     overflow: auto;
+     height: 500px;
+}
+
+.container-table table tr{
+
+    display: table-row;
+}
+
+  .container-table table th,   .container-table table td {
+
+    width: 8.3333%;
+}
+
+
+.headers{
+
+    display: table-row;
+    color: black;
+    font-style: normal;
+    background-color: whitesmoke;
+
+}
