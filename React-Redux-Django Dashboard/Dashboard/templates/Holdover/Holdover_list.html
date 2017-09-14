@@ -1,0 +1,33 @@
+<div class="container">
+    <table class="table table-bordered">
+        <thead><tr><th>Holdover Test</th></tr></thead>
+            <tr>
+                <td>ClockIdentity:</td> <td>{{ Packet.clockidentity }}</td>
+            </tr>
+            <tr>
+                <td>Destination Ethernet Address:</td> <td>{{ Packet.ETH_DST }} </td>
+            </tr>
+            <tr>
+                <td>GMClockClass:</td><td>{{ Packet.GMClockClass }} </td>
+            </tr>
+            <tr>
+                <td>GMClockAccuracy:</td> <td>{{ Packet.GMClockAccuracy }} </td>
+            </tr>
+            <tr>
+                <td>GMClockVariance:</td> <td>{{ Packet.GMClockVariance }}  </td>
+            </tr>
+            <tr>
+                <td>Time Traceable:</td> <td>{{ Packet.time_traceable }} </td>
+            </tr>
+            <tr>
+                <td>Frequency Traceable:</td> <td>{{ Packet.frequency_traceable }} </td>
+            </tr>
+            <tr>
+                <td>Timesource:</td> <td>{{ Packet.timesource }} </td>
+            </tr>
+            <tr>
+                <td>Holdover:</td> <td>{{ result }}</td>
+            </tr>
+
+        </table>
+</div>
