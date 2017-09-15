@@ -9,6 +9,7 @@ Dependencies:
     database software (I am using postgres)
     node (If you want to use hot-reloading)
     pyshark
+    pyshark-parser
     
     
 to setup postgres (MACOSX):
