@@ -20,6 +20,9 @@ to setup postgres (MACOSX):
     run psql postrges
     create user to acess the database from django ( CREATE ROLE kgb WITH LOGIN PASSWORD '1qaz!QAZ1qaz';)
     grant privileges for the database to this user ( GRANT ALL PRIVILEGES ON DATABASE timing_testbed TO kgb;)
+    run python(3) manage.py makemigrations
+    run python(3) manage.py migrate
+    npm install
     
     
 to run dashboard:
