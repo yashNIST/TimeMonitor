@@ -1,150 +1,108 @@
 /**
  * Created by kgb on 9/12/17.
  */
-var FixedDataTable = require('fixed-data-table');
-const React = require("react");
-import {connect} from "react-redux"
 
-const {Table, Column, Cell} = FixedDataTable;
+const React = require("react");
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
+let clockidentity = [];
+let GMClockID = [];
+let GMClockClass = [];
+let GMClockVariance = [];
+let GMClockAccuracy = [];
+let Ethernet = [];
+let priority_1 = [];
+let priority_2= [];
+let timesource = [];
+let sequence_id = [];
+let timestamp = [];
+let tableData = [];
 
 export default class Announce_Message_Table extends React.Component {
 
-
     render() {
 
-        let announce_messages = this.props.data;
-        var output = Object.keys(announce_messages).map(function(key){
+        let mostRecentAnnounceMessage = this.props.data[this.props.data.length - 1];
+        if (mostRecentAnnounceMessage !== undefined) {
 
-            return(
-                <tr key={key}>
-
-                    <td>{announce_messages[key].clockidentity}</td>
-                    <td>{announce_messages[key].GMClockIdentity}</td>
-                    <td>{announce_messages[key].GMClockClass}</td>
-                    <td>{announce_messages[key].GMClockVariance}</td>
-                    <td>{announce_messages[key].GMClockAccuracy}</td>
-                    <td>{announce_messages[key].ETH_DST}</td>
-                    <td>{announce_messages[key].IP_DST}</td>
-                    <td>{announce_messages[key].priority_1}</td>
-                    <td>{announce_messages[key].priority_2}</td>
-                    <td>{announce_messages[key].timesource}</td>
-                    <td>{announce_messages[key].sequence_id}</td>
-                    <td>{announce_messages[key].sniff_timestamp}</td>
+                clockidentity.push(mostRecentAnnounceMessage['clockidentity']);
+                GMClockID.push(mostRecentAnnounceMessage['GMClockIdentity']);
+                GMClockClass.push(mostRecentAnnounceMessage['GMClockClass']);
+                GMClockVariance.push(mostRecentAnnounceMessage['GMClockVariance']);
+                GMClockAccuracy.push(mostRecentAnnounceMessage['GMClockAccuracy']);
+                Ethernet.push(mostRecentAnnounceMessage['ETH_DST']);
+                priority_1.push(mostRecentAnnounceMessage['priority_1']);
+                priority_2.push(mostRecentAnnounceMessage['priority_2']);
+                timesource.push(mostRecentAnnounceMessage['timesource']);
+                sequence_id.push(mostRecentAnnounceMessage['sequence_id']);
+                timestamp.push(mostRecentAnnounceMessage['sniff_timestamp']);
 
 
-                </tr>
+                let rowData = {
 
+                    "clockidentity": clockidentity[clockidentity.length-1],
+                    "GMClockIdentity": GMClockID[GMClockID.length-1],
+                    "GMClockClass": GMClockClass[GMClockClass.length-1],
+                    "GMClockVariance": GMClockVariance[GMClockVariance.length-1],
+                    "GMClockAccuracy": GMClockAccuracy[GMClockAccuracy.length-1],
+                    "ETH_DST": Ethernet[Ethernet.length-1],
+                    "priority_1": priority_1[priority_1.length-1],
+                    "priority_2": priority_2[priority_2.length-1],
+                    "timesource": timesource[timesource.length-1],
+                    "sequence_id": sequence_id[sequence_id.length-1],
+                    "timestamp": timestamp[timestamp.length-1],
+                };
+
+                if(mostRecentAnnounceMessage['sniff_timestamp'] !== timestamp[timestamp.length-2]) {
+
+                    tableData.push(rowData);
+
+                }
+
+                return (
+
+                    <div className = "container">
+                    <div className="container-table">
+                        <table className="table message">
+                            <thead>
+                            <tr>
+                                <th>Announce Messages</th>
+                            </tr>
+                            </thead>
+                        </table>
+                        <BootstrapTable data={tableData} height={400} bodyStyle={{overflow: 'overlay'}} scrollTop={'Bottom'} options={ {noDataText: 'Connect to an Interface to Start Reading Announce Messages'} } striped>
+                            <TableHeaderColumn dataField="clockidentity">ClockIdentity</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockIdentity">GM ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockClass">GM Class</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockVariance">GM Variance</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockAccuracy">GM Accuracy</TableHeaderColumn>
+                            <TableHeaderColumn dataField="ETH_DST">Ethernet</TableHeaderColumn>
+                            <TableHeaderColumn dataField="priority_1">Priority 1</TableHeaderColumn>
+                            <TableHeaderColumn dataField="priority_2">Priority 2</TableHeaderColumn>
+                            <TableHeaderColumn dataField="timesource">Timesource</TableHeaderColumn>
+                            <TableHeaderColumn dataField="sequence_id">Sequence ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="timestamp" isKey={true}>Timestamp</TableHeaderColumn>
+                        </BootstrapTable>
+                    </div>
+                    </div>
+
+                )
+
+        }
+        else {
+
+            return (
+                <div className="conatiner">
+                    <p>Loading...</p>
+                </div>
             )
+        }
 
-        });
 
-        return (
-            <div className="container-table" id="Announce_Message_Table">
-                <table className="table message"><thead><tr><th>Announce Messages</th></tr></thead></table>
-                 <table className="table table-bordered table-striped">
-
-                     <thead>
-                     <tr className="headers">
-                         <th width="12%">Clock Identity</th>
-                         <th width="12%">GMClock ID</th>
-                         <th width="6%">GMClock Class</th>
-                         <th width="6%">GMClock Variance</th>
-                         <th width="6%">GMClock Accuracy</th>
-                         <th width="12%">Destination Ethernet</th>
-                         <th width="6%">Destination IP</th>
-                         <th width="6%">Priority 1</th>
-                         <th width="6%">Priority 2</th>
-                         <th width="6%">Timesource</th>
-                         <th width="6%">Sequence ID</th>
-                         <th width="12%">Timestamp</th>
-                     </tr>
-                     </thead>
-                     <tbody>
-                     {output}
-                     </tbody>
-                </table>
-            </div>
-
-        )
     }
+
 }
 
 /*
-const TextCell = ({rowIndex, data, col, ...props}) => (
 
-            <Cell {...props}>
-               {data.getObjectAt(rowIndex)[col]}
-            </Cell>
-            );
-
-    var announce_messages = this.props;
-        return (
-                 <Table
-                 rowHeight={50}
-                 rowsCount={1578}
-                 width={1000}
-                 height={500}
-                 headerHeight={50}
-                 {...this.props}>
-                     <Column
-                    header={<Cell>Clock Identity</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.clockidentity}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>GMClock Identity</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.GMClockIdentity}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>GMClock Class</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.GMClockClass}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>GMClock Variance</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.GMClockVariance}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>GMClock Accuracy</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.GMClockAccuracy}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Destination Ethernet</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.ETH_DST}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Destination IP</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.IP_DST}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Priority 1</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.priority_1}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Priority 2</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.priority_1}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Timesource</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.timesource}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Sequence ID</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.sequence_id}/>}
-                    width={100}
-                />
-                <Column
-                    header={<Cell>Timestamp</Cell>}
-                    cell={<TextCell data={announce_messages} col={announce_messages.sniff_timestamp}/>}
-                    width={100}
-                />
-                 </Table>
+<TableHeaderColumn dataField="timestamp" isKey={true}>Timestamp</TableHeaderColumn>
     */
