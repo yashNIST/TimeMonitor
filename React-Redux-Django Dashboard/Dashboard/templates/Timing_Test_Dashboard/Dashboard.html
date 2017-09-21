@@ -8,7 +8,21 @@
 <script type = "text/javascript" src= "https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script type = "text/javascript" src= "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
 
-     {% comment %}<nav class="navbar navbar-inverse">
+<div id= "Dashboard">
+
+    {% render_bundle "Timing_Testbed_Dashboard" %}
+    {% block content %}
+    {% endblock %}
+
+</div>
+</html>
+
+
+{% comment %}
+
+   Old Navbar for static django pages:
+
+     <nav class="navbar navbar-inverse">
 
     <div class="container-fluid">
 
@@ -21,7 +35,7 @@
                 <span class="icon-bar"></span>
 
             </button>
-            <a class="navbar-brand" href="{% url 'Dashboard:Homepage'%}">Timing Testbed Dashboard</a>
+            <a class="navbar-brand">Timing Testbed Dashboard</a>
         </div>
         <div class="collapse navbar-collapse" id="topNavBar">
             <ul class="nav navbar-nav">
@@ -73,10 +87,5 @@
 
     </div>
 
-    </nav> #}{% endcomment %}
-   <div id= "Dashboard">
-
-        {% render_bundle "Timing_Testbed_Dashboard" %}
-
-   </div>
-</html>
+    </nav>
+   {% endcomment %}
