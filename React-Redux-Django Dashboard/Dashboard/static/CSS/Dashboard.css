@@ -31,13 +31,6 @@ button{
 
 }
 
-.container-table {
-
-    display: table;
-    overflow-y: scroll;
-    height: 400px;
-
-}
 
 .container-table table {
 
@@ -46,33 +39,114 @@ button{
 
 }
 
-.container-table table thead, tbody{
+.container-table table thead{
 
-    float: left;
+    font-style: oblique;
+    background-color: oldlace;
+
+}
+
+.container table{
+
+    background-color: oldlace;
+    font-style: oblique;
+
+}
+
+.Holdover thead{
+
+    display: table;
+    background-color: royalblue;
+    font-style: oblique;
+    color: whitesmoke;
+    width: 100%;
+
+}
+
+.Holdover tbody{
+
+
+    display: table;
+    font-style: oblique;
+    width: 100%;
+
+
+}
+
+.LeapSecond thead{
+
+    display: table;
+    background-color: green;
+    font-style: oblique;
+    color: whitesmoke;
+    width: 100%;
+
+}
+
+.LeapSecond tbody{
+
+    display: table;
+    font-style: oblique;
+    width: 100%;
+
+}
+
+.ATOI thead{
+
+    display: table;
+    background-color: peru;
+    font-style: oblique;
+    color: whitesmoke;
+    width: 100%;
+
+}
+
+.ATOI tbody{
+
+    display: table;
+    font-style: oblique;
+    width: 100%;
+
+}
+
+.MulticastMAC thead{
+
+    display: table;
+    background-color: purple;
+    font-style: oblique;
+    color: whitesmoke;
+    width: 100%;
+
+}
+
+.MulticastMAC tbody{
+
+    display: table;
+    font-style: oblique;
+    width: 100%;
+
+}
+
+.BMCA thead{
+
+    display: table;
+    background-color: darkgoldenrod;
+    color: whitesmoke;
     width: 100%;
 }
-.container-table table tbody {
 
-     overflow: auto;
-     height: 500px;
+.BMCA tbody{
+
+    display: table;
+    width: 100%;
+    background-color: firebrick;
+    border-width: thick;
+    border-color: black;
 }
 
-.container-table table tr{
+.BMCA td{
 
-    display: table-row;
-}
-
-  .container-table table th,   .container-table table td {
-
-    width: 8.3333%;
-}
-
-
-.headers{
-
-    display: table-row;
-    color: black;
-    font-style: normal;
-    background-color: whitesmoke;
-
+    background-color: oldlace;
+    border-width: thick;
+    border-color: black;
 }
