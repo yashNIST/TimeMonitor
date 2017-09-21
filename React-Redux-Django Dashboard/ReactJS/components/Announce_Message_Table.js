@@ -60,7 +60,7 @@ export default class Announce_Message_Table extends React.Component {
 
                 return (
 
-                    <div className = "container">
+                    <div className = "container Announce_Message_Table">
                     <div className="container-table">
                         <table className="table message">
                             <thead>
@@ -69,18 +69,18 @@ export default class Announce_Message_Table extends React.Component {
                             </tr>
                             </thead>
                         </table>
-                        <BootstrapTable data={tableData} height={400} bodyStyle={{overflow: 'overlay'}} scrollTop={'Bottom'} options={ {noDataText: 'Connect to an Interface to Start Reading Announce Messages'} } striped>
-                            <TableHeaderColumn dataField="clockidentity">ClockIdentity</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockIdentity">GM ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockClass">GM Class</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockVariance">GM Variance</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockAccuracy">GM Accuracy</TableHeaderColumn>
-                            <TableHeaderColumn dataField="ETH_DST">Ethernet</TableHeaderColumn>
-                            <TableHeaderColumn dataField="priority_1">Priority 1</TableHeaderColumn>
-                            <TableHeaderColumn dataField="priority_2">Priority 2</TableHeaderColumn>
-                            <TableHeaderColumn dataField="timesource">Timesource</TableHeaderColumn>
-                            <TableHeaderColumn dataField="sequence_id">Sequence ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="timestamp" isKey={true}>Timestamp</TableHeaderColumn>
+                        <BootstrapTable data={tableData} height={400} bodyStyle={{overflow: 'overlay'}} scrollTop={'Bottom'} options={ {noDataText: 'Connect to an Interface to Start Reading Announce Messages'} } striped hover>
+                            <TableHeaderColumn dataField="clockidentity" width= "15%">Clock ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockIdentity" width= "15%">GM ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockClass" width= "6%">GM Class</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockVariance" width= "6%">GM Variance</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockAccuracy" width= "7%">GM Accuracy</TableHeaderColumn>
+                            <TableHeaderColumn dataField="ETH_DST" width= "11%">Ethernet</TableHeaderColumn>
+                            <TableHeaderColumn dataField="priority_1" width= "6%">P1</TableHeaderColumn>
+                            <TableHeaderColumn dataField="priority_2" width= "6%">P2</TableHeaderColumn>
+                            <TableHeaderColumn dataField="timesource" width= "9%">Timesource</TableHeaderColumn>
+                            <TableHeaderColumn dataField="sequence_id" width= "7%">Seq ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="timestamp" isKey={true} width= "12%">Timestamp</TableHeaderColumn>
                         </BootstrapTable>
                     </div>
                     </div>
@@ -101,8 +101,3 @@ export default class Announce_Message_Table extends React.Component {
     }
 
 }
-
-/*
-
-<TableHeaderColumn dataField="timestamp" isKey={true}>Timestamp</TableHeaderColumn>
-    */
