@@ -31,25 +31,12 @@ button{
 
 }
 
+.Announce_Message_Table table {
 
-.container-table table {
 
     font-style: oblique;
     background-color: lightgoldenrodyellow;
-
-}
-
-.container-table table thead{
-
-    font-style: oblique;
-    background-color: oldlace;
-
-}
-
-.container table{
-
-    background-color: oldlace;
-    font-style: oblique;
+    table-layout: fixed;
 
 }
 
@@ -67,6 +54,7 @@ button{
 
 
     display: table;
+    background-color: lightgoldenrodyellow;
     font-style: oblique;
     width: 100%;
 
@@ -86,6 +74,7 @@ button{
 .LeapSecond tbody{
 
     display: table;
+    background-color: lightgoldenrodyellow;
     font-style: oblique;
     width: 100%;
 
@@ -104,6 +93,7 @@ button{
 .ATOI tbody{
 
     display: table;
+    background-color: lightgoldenrodyellow;
     font-style: oblique;
     width: 100%;
 
@@ -122,6 +112,7 @@ button{
 .MulticastMAC tbody{
 
     display: table;
+    background-color: lightgoldenrodyellow;
     font-style: oblique;
     width: 100%;
 
@@ -139,14 +130,14 @@ button{
 
     display: table;
     width: 100%;
-    background-color: firebrick;
+    background-color: lightgrey;
     border-width: thick;
     border-color: black;
 }
 
 .BMCA td{
 
-    background-color: oldlace;
+    background-color: lightgoldenrodyellow;
     border-width: thick;
     border-color: black;
 }
