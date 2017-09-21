@@ -2,8 +2,9 @@
  * Created by kgb on 9/12/17.
  */
 
-const React = require("react");
+var React = require("react");
 import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table'
+import "./react-bootstrap-table-all.min.css";
 let clockidentity = [];
 let GMClockID = [];
 let GMClockClass = [];
@@ -69,18 +70,18 @@ export default class Announce_Message_Table extends React.Component {
                             </tr>
                             </thead>
                         </table>
-                        <BootstrapTable data={tableData} height={400} bodyStyle={{overflow: 'overlay'}} scrollTop={'Bottom'} options={ {noDataText: 'Connect to an Interface to Start Reading Announce Messages'} } striped hover>
-                            <TableHeaderColumn dataField="clockidentity" width= "15%">Clock ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockIdentity" width= "15%">GM ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockClass" width= "6%">GM Class</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockVariance" width= "6%">GM Variance</TableHeaderColumn>
-                            <TableHeaderColumn dataField="GMClockAccuracy" width= "7%">GM Accuracy</TableHeaderColumn>
-                            <TableHeaderColumn dataField="ETH_DST" width= "11%">Ethernet</TableHeaderColumn>
-                            <TableHeaderColumn dataField="priority_1" width= "6%">P1</TableHeaderColumn>
-                            <TableHeaderColumn dataField="priority_2" width= "6%">P2</TableHeaderColumn>
-                            <TableHeaderColumn dataField="timesource" width= "9%">Timesource</TableHeaderColumn>
-                            <TableHeaderColumn dataField="sequence_id" width= "7%">Seq ID</TableHeaderColumn>
-                            <TableHeaderColumn dataField="timestamp" isKey={true} width= "12%">Timestamp</TableHeaderColumn>
+                        <BootstrapTable data={tableData} height={400} bodyStyle={{overflow: 'overlay'}} scrollTop={'Bottom'} options={ {noDataText: 'Connect to an Interface to Start Reading Announce Messages'} } striped hover condensed>
+                            <TableHeaderColumn dataField="clockidentity"  headerAlign="center" dataAlign="center" width= "14%">Clock ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockIdentity" headerAlign="center" dataAlign="center" width= "14%">GM ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockClass" headerAlign="center" dataAlign="center" width= "7%">GM Class</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockVariance" headerAlign="center" dataAlign="center" width= "9%">GM Variance</TableHeaderColumn>
+                            <TableHeaderColumn dataField="GMClockAccuracy" headerAlign="center" dataAlign="center" width= "9%">GM Accuracy</TableHeaderColumn>
+                            <TableHeaderColumn dataField="ETH_DST" headerAlign="center" dataAlign="center" width= "12%">Ethernet</TableHeaderColumn>
+                            <TableHeaderColumn dataField="priority_1" headerAlign="center" dataAlign="center" width= "5%">P1</TableHeaderColumn>
+                            <TableHeaderColumn dataField="priority_2" headerAlign="center" dataAlign="center" width= "5%">P2</TableHeaderColumn>
+                            <TableHeaderColumn dataField="timesource" headerAlign="center" dataAlign="center" width= "8%">Timesource</TableHeaderColumn>
+                            <TableHeaderColumn dataField="sequence_id" headerAlign="center" dataAlign="center" width= "5%">Seq ID</TableHeaderColumn>
+                            <TableHeaderColumn dataField="timestamp" headerAlign="center" dataAlign="center" width= "12%" isKey={true}>Timestamp</TableHeaderColumn>
                         </BootstrapTable>
                     </div>
                     </div>
@@ -101,3 +102,8 @@ export default class Announce_Message_Table extends React.Component {
     }
 
 }
+
+/*
+
+<TableHeaderColumn dataField="timestamp" isKey={true}>Timestamp</TableHeaderColumn>
+   
