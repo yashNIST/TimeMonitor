@@ -29,8 +29,8 @@ to setup postgres (MACOSX):
 to run dashboard:
 
     manage.py shell  (if you need to test whether django is connecting to your database)
-    manage.py makemigrations Dashboard (once you have your database set up and connecting to django)
-    manage.py migrate (to generate sql code in your database to make your tables based on your models)
+    manage.py makemigrations Dashboard     (once you have your database set up and connecting to django)
+    manage.py migrate Dashboard      (to generate sql code in your database to make your tables based on your models)
     run:  node_modules/.bin/webpack --config webpack.local.config.js to create bundle for webpack to run in django
     manage.py runserver ( to run the django web server)
     node server.js  (to run the webpack-connected server to enable hot-reloading)
