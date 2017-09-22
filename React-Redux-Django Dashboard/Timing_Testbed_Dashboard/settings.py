@@ -57,7 +57,7 @@ ROOT_URLCONF = 'Timing_Testbed_Dashboard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, '/Dashboard/templates'), '/Users/kgb/PycharmProjects/Timing_Testbed_Dashboard/React-Redux-Django-Dashboard/Dashboard/templates'],
+        'DIRS': [os.path.join(BASE_DIR, '/Dashboard/templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
