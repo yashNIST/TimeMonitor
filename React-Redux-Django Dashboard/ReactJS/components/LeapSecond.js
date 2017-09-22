@@ -1,8 +1,10 @@
 /**
  * Created by kgb on 9/14/17.
  */
+
 var React = require('react');
-import NavigationBar from "../Navbar"
+
+import { input_code } from '../middleware/input_functions';
 
 export default class LeapSecond extends React.Component {
 
@@ -16,7 +18,7 @@ export default class LeapSecond extends React.Component {
         let utcreasonable = data['utcreasonable'];
         let li59 = data['li59'];
         let li61 = data['li61'];
-        let timesource = data['timesource'];
+        let timesource = input_code(data['timesource'], 'timesource');
         let sequence_id = data['sequence_id'];
         let timestamp = data['sniff_timestamp'];
         let action = '';
