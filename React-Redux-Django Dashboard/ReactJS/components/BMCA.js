@@ -222,6 +222,7 @@ function RUN_BMCA(mostRecentAnnounceMessage, bestMasterClock, bestClocksOnPort, 
     if(!(mostRecentAnnounceMessage.subdomain_number in allClocksDict)){
 
         allClocksDict[mostRecentAnnounceMessage.subdomain_number] = {[mostRecentAnnounceMessage['ETH_DST']]: {}};
+        bestClocksOnPort[mostRecentAnnounceMessage.subdomain_number] = {};
 
     }
     else{
