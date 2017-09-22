@@ -3,10 +3,13 @@
  */
 
 var React = require('react');
-let bestMasterClock = reset(bestMasterClock);
-let allClocksDict = {};
-let bestClocksOnPort = {};
-let rbestMasterClock = reset(rbestMasterClock);
+var bestMasterClock = reset(bestMasterClock);
+var allClocksDict = {};
+var bestClocksOnPort = {};
+var rbestMasterClock = reset(rbestMasterClock);
+
+import { input_code } from '../middleware/input_functions';
+
 
 export default class BMCA extends React.Component {
 
@@ -26,15 +29,15 @@ export default class BMCA extends React.Component {
             'GMClockIdentity': data['GMClockIdentity'],
             'localstepsremoved': data['localstepsremoved'],
             'alternateMasterFlag': data['alternateMasterFlag'],
-            'GMClockClass': data['GMClockClass'],
-            'GMClockAccuracy': data['GMClockAccuracy'],
+            'GMClockClass': input_code(data['GMClockClass'], 'clockclass'),
+            'GMClockAccuracy': input_code(data['GMClockAccuracy'], 'clockaccuracy'),
             'GMClockVariance': data['GMClockVariance'],
             'priority_1': data['priority_1'],
             'priority_2': data['priority_2'],
             'SRC_PORT': data['SRC_PORT'],
             'DST_PORT': data['DST_PORT'],
             'subdomain_number': data['subdomain_number'],
-            'timesource': data['timesource'],
+            'timesource': input_code(data['timesource'], 'timesource'),
             'announce_message_timeout': 10,
             'STATE': 'M'
 
@@ -85,14 +88,19 @@ export default class BMCA extends React.Component {
             )
         });
 
-        let bestClocksDisplay = Object.keys(bestClocksOnPort).map(function(port) {
+        let bestClocksDisplay = Object.keys(bestClocksOnPort).map(function(subdomain) {
 
                 return (
                     <div>
-
                         <tr>
-                            <td>Port: {port}</td>
-                            <td>Clock ID: {bestClocksOnPort[port].clockidentity}</td>
+                        <td> Domain: {subdomain} </td>
+                        {Object.keys(bestClocksOnPort[subdomain]).map(function(port) {
+                            return(
+                           <div>
+                                <td>Port: {port}</td><td>Clock ID: {bestClocksOnPort[subdomain][port].clockidentity}</td>
+                           </div>
+                            )
+                        })}
                         </tr>
                     </div>
                 )
@@ -211,81 +219,84 @@ export default class BMCA extends React.Component {
 
 function RUN_BMCA(mostRecentAnnounceMessage, bestMasterClock, bestClocksOnPort, allClocksDict){
 
-    if(!(mostRecentAnnounceMessage['subdomain_number'] in allClocksDict)){
+    if(!(mostRecentAnnounceMessage.subdomain_number in allClocksDict)){
 
         allClocksDict[mostRecentAnnounceMessage.subdomain_number] = {[mostRecentAnnounceMessage['ETH_DST']]: {}};
 
     }
     else{
 
-        if(allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST] === {}){
+        if(!(mostRecentAnnounceMessage.ETH_DST in allClocksDict[mostRecentAnnounceMessage.subdomain_number])){
 
             allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST] = {[mostRecentAnnounceMessage.clockidentity]: mostRecentAnnounceMessage};
 
         }
         else{
 
-            allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST][mostRecentAnnounceMessage.clockidentity] = mostRecentAnnounceMessage;
             let check = check_timeout(allClocksDict, bestMasterClock);
             allClocksDict = check[0];
             bestMasterClock = check[1];
 
             for (let subdomain in allClocksDict) {
 
-                for (let port in allClocksDict[subdomain]) {
+                if (subdomain === mostRecentAnnounceMessage.subdomain_number) {
 
-                    //rbestMasterClock = reset(rbestMasterClock);
+                    for (let port in allClocksDict[subdomain]) {
 
-                    if (port === mostRecentAnnounceMessage.ETH_DST) {
+                        rbestMasterClock = reset(rbestMasterClock);
 
-                        for (let clockid in allClocksDict[subdomain][port]) {
+                        if (port === mostRecentAnnounceMessage.ETH_DST) {
 
-                            if (rbestMasterClock.clockidentity === '') {
+                            for (let clockid in allClocksDict[subdomain][port]) {
+
+                                if (rbestMasterClock.clockidentity === '') {
 
 
-                                rbestMasterClock = allClocksDict[subdomain][port][clockid];
+                                    rbestMasterClock = allClocksDict[subdomain][port][clockid];
 
 
-                            } else {
+                                } else {
 
-                                rbestMasterClock = ((dataSetComparison(allClocksDict[subdomain][port][clockid], rbestMasterClock) === rbestMasterClock.clockidentity) ? rbestMasterClock : allClocksDict[mostRecentAnnounceMessage.subdomain_number][port][clockid]);
-
-                            }
-                            //StateDecision here
-                            if (clockid === mostRecentAnnounceMessage.clockidentity) {
-
-                                if (qualified(mostRecentAnnounceMessage, allClocksDict[subdomain][port][clockid]) === true) {
-
-                                    allClocksDict[subdomain][port][clockid] = mostRecentAnnounceMessage;
+                                    rbestMasterClock = ((dataSetComparison(allClocksDict[subdomain][port][clockid], rbestMasterClock) === rbestMasterClock.clockidentity) ? rbestMasterClock : allClocksDict[mostRecentAnnounceMessage.subdomain_number][port][clockid]);
 
                                 }
+                                //StateDecision here
+                                if (clockid === mostRecentAnnounceMessage.clockidentity) {
+
+                                    if (qualified(mostRecentAnnounceMessage, allClocksDict[subdomain][port][clockid]) === true) {
+
+                                        allClocksDict[subdomain][port][clockid] = mostRecentAnnounceMessage;
+
+                                    }
+
+                                }
+                            }
+
+                            if (!(mostRecentAnnounceMessage.clockidentity in allClocksDict[subdomain][port])) {
+
+                                allClocksDict[subdomain][port] = {[mostRecentAnnounceMessage.clockidentity]: mostRecentAnnounceMessage};
 
                             }
-                        }
 
-                        if (!(mostRecentAnnounceMessage.clockidentity in allClocksDict[subdomain][port])) {
+                            if (!(port in bestClocksOnPort[subdomain])) {
 
-                            allClocksDict[subdomain][port] = {[mostRecentAnnounceMessage.clockidentity]: mostRecentAnnounceMessage};
+                                bestClocksOnPort[subdomain][port] = rbestMasterClock;
 
-                        }
+                            }
+                            else {
 
-                        if (!(port in bestClocksOnPort)) {
+                                bestClocksOnPort[subdomain][port] = ((rbestMasterClock.clockidentity !== '') ? rbestMasterClock : bestClocksOnPort[subdomain][port]);
 
-                            bestClocksOnPort[port] = rbestMasterClock;
+                            }
 
-                        }
-                        else {
-
-                            bestClocksOnPort[port] = ((rbestMasterClock.clockidentity !== '') ? bestClocksOnPort[port] : rbestMasterClock);
+                            bestMasterClock = (((dataSetComparison(bestMasterClock, rbestMasterClock) === bestMasterClock.clockidentity) && (rbestMasterClock.sniff_timestamp - bestMasterClock.sniff_timestamp < 10)) ? bestMasterClock : rbestMasterClock);
 
                         }
 
-                        bestMasterClock = ((dataSetComparison(bestMasterClock, rbestMasterClock) === bestMasterClock.clockidentity) ? bestMasterClock : rbestMasterClock);
-                        console.log(bestClocksOnPort);
                     }
-
                 }
             }
+
 
             }
         }
@@ -299,7 +310,6 @@ function check_timeout(allClocksDict, bestMasterClock){
     for(let subdomain in allClocksDict){
 
         for(let port in allClocksDict[subdomain]) {
-
 
             for (let clock in allClocksDict[subdomain][port]) {
 
@@ -399,7 +409,7 @@ function GMIdentity_EqualComparison(firstPacket, secondPacket){
 
                 else{
 
-                    return(-2)
+                    return('-2')
                 }
 
             }
