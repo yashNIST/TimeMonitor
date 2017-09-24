@@ -290,7 +290,7 @@ function RUN_BMCA(mostRecentAnnounceMessage, bestMasterClock, bestClocksOnPort, 
 
                             }
 
-                            bestMasterClock = (((dataSetComparison(bestMasterClock, rbestMasterClock) === bestMasterClock.clockidentity) && (rbestMasterClock.sniff_timestamp - bestMasterClock.sniff_timestamp < 10)) ? bestMasterClock : rbestMasterClock);
+                            bestMasterClock = (((dataSetComparison(bestMasterClock, rbestMasterClock) === bestMasterClock.clockidentity) && (rbestMasterClock.sniff_timestamp - bestMasterClock.sniff_timestamp < 10)) ? bestMasterClock : bestClocksOnPort[subdomain][port]);
 
                         }
 

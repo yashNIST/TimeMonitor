@@ -106,4 +106,5 @@ export default class Announce_Message_Table extends React.Component {
 /*
 
 <TableHeaderColumn dataField="timestamp" isKey={true}>Timestamp</TableHeaderColumn>
-*/   
+   
+*/

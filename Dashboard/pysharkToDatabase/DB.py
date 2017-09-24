@@ -5,10 +5,10 @@ sys.path.append('/Users/kgb/PycharmProjects/Timing_Testbed_Dashboard')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Timing_Testbed_Dashboard.settings')
 django.setup()
 
-from Dashboard.models import Announce_Message, Path_Delay_Request_Message
+from ..models import Announce_Message, Path_Delay_Request_Message
 import pyshark
 import threading
-from Dashboard.pysharkToDatabase import PyShark_Capture
+from ..pysharkToDatabase import PyShark_Capture
 
 
 class StartApp(object):
@@ -24,8 +24,8 @@ class StartApp(object):
 
     def run(self):
 
-        capture = pyshark.LiveCapture(interface='en5')
-        #capture = pyshark.FileCapture(PyShark_Capture.cap.input_filename)
+        #capture = pyshark.LiveCapture(interface='en5')
+        capture = pyshark.FileCapture('P2P_UDP_170913_Tests4.1_4.2_4.4_4.7.1.pcap')
 
         for packet in capture:
 
@@ -57,7 +57,7 @@ class StartApp(object):
                         logmessageperiod=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.logmessageperiod'),
                         origintimestampseconds=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.an.origintimestamp.seconds'),
                         origintimestampnanoseconds=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.an.origintimestamp.nanoseconds'),
-                        origincurrentutcoffset=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.an.origincurrentutcoffset'),
+                        utc_offset=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.an.origincurrentutcoffset'),
                         IP_SRC=PyShark_Capture.get_ip(packet, 'src'),
                         IP_DST=PyShark_Capture.get_ip(packet, 'dst'),
                         ETH_SRC=PyShark_Capture.get_field(packet, 'eth', 'eth.src'),
@@ -76,6 +76,7 @@ class StartApp(object):
                         priority_2=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.priority2'),
                         sourceport_id=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.sourceportid'),
                         timesource=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.timesource'),
+                        subdomain_number=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.subdomainnumber'),
                         ATOI_Key=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.atoi.keyField'),
                         ATOI_Offset=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.atoi.currentOffset'),
                         ATOI_TLVType=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.tlvType'),
@@ -84,6 +85,7 @@ class StartApp(object):
                         ATOI_DisplayName=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.atoi.displayName'),
                         ATOI_DisplayNameLength=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.an.atoi.displayName.length')
                     )
+
 
                     if Announce_Message.objects.filter(sniff_timestamp=packet.sniff_timestamp).exists():
 

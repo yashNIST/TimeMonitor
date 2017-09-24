@@ -20,7 +20,7 @@ class Announce_Message(models.Model):
     STATE = models.CharField(max_length=200, null=True)
     priority_1 = models.IntegerField(default=0, null=True)
     priority_2 = models.IntegerField(default=0, null=True)
-    subdomain_number = models.IntegerField(default=0, null=True)
+    subdomain_number = models.CharField(max_length=10000, null=True)
     timesource = models.CharField(max_length=50, null=True)
     localstepsremoved = models.IntegerField(default=0, null=True)
     timetraceable = models.IntegerField(default=0, null=True)
