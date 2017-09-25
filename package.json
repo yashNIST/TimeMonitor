@@ -40,7 +40,7 @@
     "redux": "^3.3.1",
     "redux-logger": "^3.0.6",
     "redux-thunk": "^1.0.3",
+    "style-loader": "^0.18.2",
     "webpack-css-loaders": "^1.0.0"
   }
 }
-
