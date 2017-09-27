@@ -182,7 +182,9 @@ export default class BMCA extends React.Component {
                         <th>Best Master Clocks</th>
                     </tr>
                     </thead>
+                    <tbody>
                     { bestClocksDisplay }
+                    </tbody>
                 </table>
             </div>
         )
