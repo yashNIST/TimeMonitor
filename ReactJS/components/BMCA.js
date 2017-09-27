@@ -142,7 +142,7 @@ export default class BMCA extends React.Component {
                                     <div>
                                         <tr>
                                             {(!['comparison', 'STATE', 'IP_SRC', 'IP_DST', 'subdomain_number', 'alternateMasterFlag'].includes(clock)) &&
-                                               <div><td style={(clock === comparison && bestMasterClocks[subdomain][clock] === bestMasterClocks[subdomain][comparison]) ? highlighted: normal }>{clock}:</td><td>{bestMasterClocks[subdomain][clock]}</td></div>}
+                                               <div><td style={(clock === comparison && bestMasterClocks[subdomain][clock] === bestMasterClocks[subdomain][comparison]) ? highlighted: normal }>{clock}</td><td>{bestMasterClocks[subdomain][clock]}</td></div>}
                                         </tr>
                                     </div>
                                 )
