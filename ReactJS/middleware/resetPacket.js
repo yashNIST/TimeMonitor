@@ -1,7 +1,9 @@
 /**
  * Created by kgb on 9/26/17.
  */
-export function reset(packet){
+let packet;
+
+export function reset(){
 
     packet = {
 
@@ -21,7 +23,7 @@ export function reset(packet){
             priority_1: 128,
             priority_2: 128,
             subdomain_number: 0,
-            announce_message_timeout: 10,
+            announce_message_timeout: 20,
             STATE: 'M',
             comparison: ''
     };
