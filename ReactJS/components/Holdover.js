@@ -3,8 +3,13 @@
  */
 
 var React = require('react');
-var startFlag = 0;
-var result = '';
+var startHoldover = 0;
+var holdover = '';
+var startHoldoverTime = 0;
+var endHoldoverTime = 0;
+
+var startRecovery = 0;
+var recovery = '';
 var startRecoveryTime = 0;
 var endRecoveryTime = 0;
 
@@ -12,13 +17,17 @@ import { input_code } from '../middleware/input_functions'
 
 export default class Holdover extends React.Component {
 
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.data !== this.props.data);
+    }
+
     render(){
 
         let data = this.props.data;
         let mostRecentAnnounceMessage = {
             'clockidentity': data['clockidentity'],
             'GMClockID': data['GMClockIdentity'],
-            'GMClockClass': input_code(data['GMClockClass'], 'clockclass'),
+            'GMClockClass': input_code(data['GMClockClass'], 'clockclass') + ' ( '  + data['GMClockClass'].toString() + ' )',
             'GMClockVariance': data['GMClockVariance'],
             'GMClockAccuracy': input_code(data['GMClockAccuracy'], 'clockaccuracy'),
             'Ethernet': data['ETH_DST'],
@@ -26,13 +35,15 @@ export default class Holdover extends React.Component {
             'frequency_traceable': data['frequencytraceable'],
             'timesource': input_code(data['timesource'], 'timesource'),
             'sequence_id': data['sequence_id'],
-            'timestamp': data['sniff_timestamp'],
+            'timestamp': parseFloat(data['sniff_timestamp']),
 
-        }
-        result = Holdover_Test(startFlag, mostRecentAnnounceMessage);
-        startFlag = result[0];
-        result = result[1];
+        };
 
+        let result = Holdover_Test(startHoldover, startRecovery, mostRecentAnnounceMessage, data['GMClockClass']);
+        startHoldover = result[0];
+        startRecovery = result[1];
+        holdover = result[2];
+        recovery = result[3];
 
         return(
 
@@ -86,7 +97,11 @@ export default class Holdover extends React.Component {
                         </tr>
                         <tr>
                             <td>Holdover:</td>
-                            <td>{ result }</td>
+                            <td>{ holdover }</td>
+                        </tr>
+                        <tr>
+                            <td>Recovery:</td>
+                            <td>{ recovery }</td>
                         </tr>
                         </tbody>
 
@@ -98,27 +113,43 @@ export default class Holdover extends React.Component {
 }
 
 
-function Holdover_Test(startFlag, mostRecentAnnounceMessage){
+function Holdover_Test(startHoldover, startRecovery,  mostRecentAnnounceMessage, classcode){
 
-    if(mostRecentAnnounceMessage.time_traceable === 0 && mostRecentAnnounceMessage.frequency_traceable === 0 && startFlag === 0){
 
-            startRecoveryTime = mostRecentAnnounceMessage.timestamp;
-            startFlag = 1;
+    if(classcode === 7 && startHoldover === 0) {
 
-        } else if(mostRecentAnnounceMessage.time_traceable === 1 && mostRecentAnnounceMessage.frequency_traceable === 1 && startFlag ===1) {
+                startHoldoverTime = mostRecentAnnounceMessage.timestamp;
+                startHoldover = 1;
+                holdover = '';
+
+    }
+
+    if(classcode === 52 && startHoldover === 1){
+
+        endHoldoverTime = mostRecentAnnounceMessage.timestamp;
+        if((endHoldoverTime - startHoldoverTime) >= 5){
+
+            holdover = 'Clock Stayed Within 250 us   [ ' +  (endHoldoverTime - startHoldoverTime) + ' seconds ]';
+        }
+        startHoldover = 0;
+    }
+
+    if(classcode === 187 && startRecovery === 0){
+
+
+        startRecoveryTime = mostRecentAnnounceMessage.timestamp;
+        startRecovery = 1;
+        recovery = '';
+    }
+
+    if(classcode === 6 && startRecovery === 1){
 
         endRecoveryTime = mostRecentAnnounceMessage.timestamp;
-        if ((endRecoveryTime - startRecoveryTime) > 16) {
+        recovery = 'Recovery Time was  ' + (endRecoveryTime - startRecoveryTime) + ' seconds';
+        startRecovery = 0;
 
-            result = 'FAIL: Recovery Time is '
-        }
-        else {
-
-            result = 'PASS: Recovery Time is '
-        }
-
-        result = (result + (endRecoveryTime - startRecoveryTime) + ' seconds');
-        startFlag = 0;
     }
-    return([startFlag, result]);
+
+
+    return([startHoldover, startRecovery,  holdover, recovery]);
 }
