@@ -34,7 +34,8 @@ export default class BMCA extends React.Component {
     render(){
 
         let data = this.props.data;
-        //console.log(allClocksDict);
+
+        console.log('NEW ANNOUNCE MESSAGE');
         let mostRecentAnnounceMessage = {
 
             IP_SRC: data['IP_SRC'],
@@ -47,14 +48,14 @@ export default class BMCA extends React.Component {
             GMClockIdentity: data['GMClockIdentity'],
             localstepsremoved: data['localstepsremoved'],
             alternateMasterFlag: data['alternateMasterFlag'],
-            GMClockClass: input_code(data['GMClockClass'], 'clockclass'),
+            GMClockClass: input_code(data['GMClockClass'], 'clockclass') + ' ( '  + data['GMClockClass'].toString() + ' )',
             GMClockAccuracy: input_code(data['GMClockAccuracy'], 'clockaccuracy'),
             GMClockVariance: data['GMClockVariance'],
             priority_1: data['priority_1'],
             priority_2: data['priority_2'],
             subdomain_number: data['subdomain_number'],
             timesource: input_code(data['timesource'], 'timesource'),
-            announce_message_timeout: 10,
+            announce_message_timeout: 20,
             STATE: 'M',
             comparison: ''
         };
@@ -65,35 +66,25 @@ export default class BMCA extends React.Component {
         bestClocksOnPort = results[2];
         allClocksDict = results[3];
 
-        if(bestMasterClocks[mostRecentAnnounceMessage.subdomain_number][bestMasterClocks[mostRecentAnnounceMessage.subdomain_number].comparison] !== undefined) {
-
-            comparison = bestMasterClocks[mostRecentAnnounceMessage.subdomain_number].comparison;
-
-        }
-
-
         let AllClocksDisplay = Object.keys(allClocksDict).map(function(subdomain){
 
             return(
                 <div>
-                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke'}}>Domain: {subdomain}</td>
+                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', border: 'none'}}>Domain: {subdomain}</td>
 
                         <tr>
                             {Object.keys(allClocksDict[subdomain]).map(function(port){
 
                                 return(
                                     <div>
-                                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke'}}>Port: {port}</td>
+                                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', border: 'none'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke',  border: 'none'}}>Port: {port}</td>
                                             <tr>
                                             {Object.keys(allClocksDict[subdomain][port]).map(function(clock){
 
                                                 return(
-
-                                                    <div onClick={() => <expandableTableCell clock={allClocksDict[subdomain][port][clock]}/>}>
                                                         <tr>
-                                                            <td style={{ backgroundColor: 'orangered', color: 'whitesmoke'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke'}}></td><td>Clock ID: {clock}</td>
+                                                            <td style={{ backgroundColor: 'orangered', color: 'whitesmoke' , borderTop: 'none', borderLeft: 'none', borderRight: 'none'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke',  borderTop: 'none', borderLeft: 'none'}}></td><td>Clock ID: {clock}</td>
                                                         </tr>
-                                                    </div>
                                                 )
 
                                             })
@@ -135,14 +126,15 @@ export default class BMCA extends React.Component {
              return(
                  <td style={{valign: 'top', backgroundColor: 'darkgrey'}}>
                 <table className="table table-bordered">
-                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke'}}>Domain: {subdomain}</td>
+                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', textAlign: 'center'}}>Domain: {subdomain}</td>
                         {Object.keys(bestMasterClocks[subdomain]).map(function(clock){
+
                                 return(
 
                                     <div>
                                         <tr>
                                             {(!['comparison', 'STATE', 'IP_SRC', 'IP_DST', 'subdomain_number', 'alternateMasterFlag'].includes(clock)) &&
-                                               <div><td style={(clock === comparison && bestMasterClocks[subdomain][clock] === bestMasterClocks[subdomain][comparison]) ? highlighted: normal }>{clock}</td><td>{bestMasterClocks[subdomain][clock]}</td></div>}
+                                               <div><td style={(clock === bestMasterClocks[subdomain].comparison) ? highlighted: normal }>{clock}</td><td>{bestMasterClocks[subdomain][clock]}</td></div>}
                                         </tr>
                                     </div>
                                 )
