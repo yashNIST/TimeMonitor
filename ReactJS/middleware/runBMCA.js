@@ -6,9 +6,9 @@ import { reset } from "./resetPacket";
 
 let rbestMasterClock;
 let bestMasterClock;
+let mostRecentAnnounceMessage;
 
 export function RUN_BMCA(mostRecentAnnounceMessage,  bestMasterClocks, bestClocksOnPort, allClocksDict){
-
 
     if(!(mostRecentAnnounceMessage.subdomain_number in allClocksDict)){
 
@@ -21,113 +21,79 @@ export function RUN_BMCA(mostRecentAnnounceMessage,  bestMasterClocks, bestClock
 
         if(!(mostRecentAnnounceMessage.ETH_DST in allClocksDict[mostRecentAnnounceMessage.subdomain_number])){
 
-            allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST] = {[mostRecentAnnounceMessage.clockidentity]: mostRecentAnnounceMessage};
+            allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST] = {[mostRecentAnnounceMessage.clockidentity]: {}};
 
         }
         else{
 
-            let check = check_timeout(mostRecentAnnounceMessage, allClocksDict, bestMasterClocks);
-            allClocksDict = check[0];
-            bestMasterClocks = check[1];
+            if (!(mostRecentAnnounceMessage.clockidentity in allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST])) {
 
-            for (let subdomain in allClocksDict) {
+                allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST][mostRecentAnnounceMessage.clockidentity] =  mostRecentAnnounceMessage;
 
-                if (subdomain === mostRecentAnnounceMessage.subdomain_number) {
+            }
+            else {
 
-                    bestMasterClock = reset(bestMasterClock);
+                for (let subdomain in allClocksDict) {
+
+                    bestMasterClock = reset();
+                    bestMasterClocks[subdomain] = (bestMasterClocks[subdomain].announce_message_timeout > 0) ? bestMasterClocks[subdomain] : reset();
+
 
                     for (let port in allClocksDict[subdomain]) {
 
-                        rbestMasterClock = reset(rbestMasterClock);
+                        rbestMasterClock = reset();
 
-                        if (port === mostRecentAnnounceMessage.ETH_DST) {
+                        for (let clockid in allClocksDict[subdomain][port]) {
 
-                            for (let clockid in allClocksDict[subdomain][port]) {
+                            allClocksDict[subdomain][port][clockid].announce_message_timeout --;
+                            if (subdomain === mostRecentAnnounceMessage.subdomain_number && port === mostRecentAnnounceMessage.ETH_DST && clockid === mostRecentAnnounceMessage.clockidentity) {
 
-                                if (rbestMasterClock.clockidentity === '') {
-
-
-                                    rbestMasterClock = allClocksDict[subdomain][port][clockid];
+                                allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST][mostRecentAnnounceMessage.clockidentity] = (qualified(mostRecentAnnounceMessage, allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST][mostRecentAnnounceMessage.clockidentity]) === true) ? mostRecentAnnounceMessage : allClocksDict[mostRecentAnnounceMessage.subdomain_number][mostRecentAnnounceMessage.ETH_DST][mostRecentAnnounceMessage.clockidentity];
 
 
-                                } else {
+                            if (rbestMasterClock.clockidentity === '') {
 
-                                    rbestMasterClock = ((dataSetComparison(allClocksDict[subdomain][port][clockid], rbestMasterClock) === rbestMasterClock) ? rbestMasterClock : allClocksDict[mostRecentAnnounceMessage.subdomain_number][port][clockid]);
+
+                                rbestMasterClock = allClocksDict[subdomain][port][clockid];
+
+
+                            } else {
+
+                                rbestMasterClock = ((dataSetComparison(rbestMasterClock, allClocksDict[subdomain][port][clockid]) === rbestMasterClock) ? rbestMasterClock : allClocksDict[mostRecentAnnounceMessage.subdomain_number][port][clockid]);
+
+                            }
+                            //StateDecision here
+                            if (allClocksDict[subdomain][port][clockid].announce_message_timeout === 0) {
+
+                                    delete(allClocksDict[subdomain][port][clockid])
 
                                 }
-                                //StateDecision here
-                                if (clockid === mostRecentAnnounceMessage.clockidentity) {
-
-                                    if (qualified(mostRecentAnnounceMessage, allClocksDict[subdomain][port][clockid]) === true) {
-
-                                        allClocksDict[subdomain][port][clockid] = mostRecentAnnounceMessage;
-
-                                    }
-
-                                }
                             }
 
-                            if (!(mostRecentAnnounceMessage.clockidentity in allClocksDict[subdomain][port])) {
-
-                                allClocksDict[subdomain][port] = {[mostRecentAnnounceMessage.clockidentity]: mostRecentAnnounceMessage};
-
-                            }
-
-                            if (!(port in bestClocksOnPort[subdomain])) {
-
-                                bestClocksOnPort[subdomain][port] = rbestMasterClock;
-
-                            }
-                            else {
-
-                                bestClocksOnPort[subdomain][port] = ((rbestMasterClock.clockidentity !== '') ? rbestMasterClock : bestClocksOnPort[subdomain][port]);
-
-                            }
-
-                            bestMasterClocks[subdomain] = ((dataSetComparison(bestMasterClocks[subdomain], rbestMasterClock) === bestMasterClocks[subdomain]) ? bestMasterClocks[subdomain] : bestClocksOnPort[subdomain][port]);
 
                         }
+                        console.log('\n');
+                        if (!(port in bestClocksOnPort[subdomain]) && (subdomain === mostRecentAnnounceMessage.subdomain_number)) {
 
+                            bestClocksOnPort[subdomain][port] = rbestMasterClock;
+
+                        }
+                        else if (subdomain === mostRecentAnnounceMessage.subdomain_number) {
+
+                            bestClocksOnPort[subdomain][port] = ((rbestMasterClock.clockidentity !== '') ? rbestMasterClock : bestClocksOnPort[subdomain][port]);
+                            bestMasterClock = (((dataSetComparison(bestMasterClock, bestClocksOnPort[subdomain][port]) === bestMasterClock)) ? bestMasterClock : bestClocksOnPort[subdomain][port]);
+                        }
                     }
+
+                    bestMasterClocks[subdomain] = (subdomain === mostRecentAnnounceMessage.subdomain_number) ? bestMasterClock : bestMasterClocks[subdomain];
                 }
             }
-
 
             }
         }
 
     return([mostRecentAnnounceMessage, bestMasterClocks, bestClocksOnPort, allClocksDict])
 }
-
-
-function check_timeout(mostRecentAnnounceMessage, allClocksDict, bestMasterClocks){
-
-
-    for(let subdomain in allClocksDict){
-
-        if(subdomain === mostRecentAnnounceMessage.subdomain_number) {
-
-            for (let port in allClocksDict[subdomain]) {
-
-                for (let clock in allClocksDict[subdomain][port]) {
-
-
-                    allClocksDict[subdomain][port][clock].announce_message_timeout--;
-                    bestMasterClocks[subdomain] = updateBestMasterInfo(bestMasterClocks[subdomain], allClocksDict[subdomain][port][clock]);
-
-                    if (allClocksDict[subdomain][port][clock].announce_message_timeout === 0) {
-
-                        delete(allClocksDict[subdomain][port][clock]);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    return([allClocksDict, bestMasterClocks])
-    }
-
 
 function stateDecision(mostRecentAnnounceMessage, bestMasterOnPort, bestMasterClock){
 
@@ -144,14 +110,16 @@ function stateDecision(mostRecentAnnounceMessage, bestMasterOnPort, bestMasterCl
 
 function qualified(mostRecentAnnounceMessage, lastAnnounceMessage){
 
-    if(mostRecentAnnounceMessage.localstepsremoved > 255){
+    if(mostRecentAnnounceMessage !== undefined && lastAnnounceMessage !== undefined) {
+        if (mostRecentAnnounceMessage.localstepsremoved > 255) {
 
-        return(false);
-    }
+            return (false);
+        }
 
-    if(mostRecentAnnounceMessage.sequence_id === lastAnnounceMessage.sequence_id){
+        if (mostRecentAnnounceMessage.sequence_id === lastAnnounceMessage.sequence_id || mostRecentAnnounceMessage.sniff_timestamp === lastAnnounceMessage.sniff_timestamp) {
 
-        return(false);
+            return (false);
+        }
     }
 
     return(true);
@@ -280,16 +248,4 @@ function setComparison(firstPacket, secondPacket, field){
         secondPacket.comparison = field;
         return(secondPacket)
     }
-}
-
-
-function updateBestMasterInfo(bestMasterClock, newestPacketFromClock){
-
-    bestMasterClock.announce_message_timeout = ((newestPacketFromClock.clockidentity === bestMasterClock.clockidentity) ? bestMasterClock.announce_message_timeout - 1: bestMasterClock.announce_message_timeout);
-    bestMasterClock.sniff_timestamp = ((newestPacketFromClock.clockidentity === bestMasterClock.clockidentity) ? newestPacketFromClock.sniff_timestamp : bestMasterClock.sniff_timestamp);
-    bestMasterClock.sequence_id = ((newestPacketFromClock.clockidentity === bestMasterClock.clockidentity) ? newestPacketFromClock.sequence_id : bestMasterClock.sequence_id);
-
-    bestMasterClock = (bestMasterClock.announce_message_timeout <= 0) ? reset(bestMasterClock): bestMasterClock;
-    return(bestMasterClock)
-
 }
