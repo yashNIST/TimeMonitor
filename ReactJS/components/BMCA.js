@@ -12,6 +12,7 @@ var bestMasterClocks = {};
 var allClocksDict = {};
 var bestClocksOnPort = {};
 var comparison = '';
+var lastState = '';
 var highlighted = {
 
     backgroundColor: 'green',
@@ -35,7 +36,6 @@ export default class BMCA extends React.Component {
 
         let data = this.props.data;
 
-        console.log('NEW ANNOUNCE MESSAGE');
         let mostRecentAnnounceMessage = {
 
             IP_SRC: data['IP_SRC'],
@@ -55,8 +55,7 @@ export default class BMCA extends React.Component {
             priority_2: data['priority_2'],
             subdomain_number: data['subdomain_number'],
             timesource: input_code(data['timesource'], 'timesource'),
-            announce_message_timeout: 20,
-            STATE: 'M',
+            STATE: (bestMasterClocks !== {} && lastState !== '') ? lastState : '',
             comparison: ''
         };
 
@@ -65,6 +64,7 @@ export default class BMCA extends React.Component {
         bestMasterClocks = results[1];
         bestClocksOnPort = results[2];
         allClocksDict = results[3];
+        //console.log(lastState);
 
         let AllClocksDisplay = Object.keys(allClocksDict).map(function(subdomain){
 
@@ -129,11 +129,12 @@ export default class BMCA extends React.Component {
                     <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', textAlign: 'center'}}>Domain: {subdomain}</td>
                         {Object.keys(bestMasterClocks[subdomain]).map(function(clock){
 
+                            lastState = bestMasterClocks[subdomain].STATE;
                                 return(
 
                                     <div>
                                         <tr>
-                                            {(!['comparison', 'STATE', 'IP_SRC', 'IP_DST', 'subdomain_number', 'alternateMasterFlag'].includes(clock)) &&
+                                            {(!['comparison','IP_SRC', 'IP_DST', 'subdomain_number', 'alternateMasterFlag'].includes(clock)) &&
                                                <div><td style={(clock === bestMasterClocks[subdomain].comparison) ? highlighted: normal }>{clock}</td><td>{bestMasterClocks[subdomain][clock]}</td></div>}
                                         </tr>
                                     </div>
