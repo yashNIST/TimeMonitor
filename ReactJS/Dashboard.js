@@ -10,7 +10,7 @@ import Holdover from  "./components/Holdover"
 import LeapSecond from "./components/LeapSecond"
 import ATOI from "./components/ATOI"
 import MulticastMAC from "./components/MulticastMAC"
-
+import RESTAPI from "./components/RESTAPI"
 
 /*
 import * as announceMessageActions from "./actions/announceMessageActions"
@@ -47,7 +47,7 @@ var Dashboard = React.createClass({
             cache: false,
             success: function(announcemessages) {
                 this.setState({
-                    AnnounceMessages: announcemessages,
+                    AnnounceMessages: ((announcemessages.length > 1800) ? announcemessages.slice(announcemessages.length - 1801, announcemessages.length -1): announcemessages),
                 });
             }.bind(this)
         })
@@ -61,7 +61,7 @@ var Dashboard = React.createClass({
             cache: false,
             success: function(pdelaymessages) {
                 this.setState({
-                    PDelayMessages: pdelaymessages,
+                    PDelayMessages: ((pdelaymessages > 1800) ? pdelaymessages.slice(pdelaymessages.length - 1801, pdelaymessages.length -1) : pdelaymessages),
                 });
             }.bind(this)
         })
@@ -95,13 +95,14 @@ var Dashboard = React.createClass({
                         <Route exact path={'/LeapSecond'} component={() => <LeapSecond data={this.state.AnnounceMessages[this.state.AnnounceMessages.length - 1]}/>}/>
                         <Route exact path={'/ATOI'} component={() => <ATOI data={this.state.AnnounceMessages[this.state.AnnounceMessages.length - 1]}/>}/>
                         <Route exact path={'/MulticastMAC'} component={() => <MulticastMAC data={this.state.PDelayMessages[this.state.PDelayMessages.length - 1]}/>}/>
+                        <Route exact path={'/RESTAPI'} component={RESTAPI}/>
                     </Switch>
                     </div>
                 </Router>
         )
     }
 
-})
+});
 
  render(
 
@@ -136,3 +137,4 @@ componentDidMount() {
   children: React.PropTypes.object.isRequired
 
 };*/
+
