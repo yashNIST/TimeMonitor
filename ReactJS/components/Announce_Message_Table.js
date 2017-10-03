@@ -17,8 +17,14 @@ let timesource = [];
 let sequence_id = [];
 let timestamp = [];
 let tableData = [];
+let boundaryclocks = {};
+let transparentclocks = {};
 
 export default class Announce_Message_Table extends React.Component {
+
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.data !== this.props.data);
+    }
 
     render() {
 
@@ -59,6 +65,22 @@ export default class Announce_Message_Table extends React.Component {
 
                 }
 
+                if(mostRecentAnnounceMessage.clockidentity === mostRecentAnnounceMessage.GMClockIdentity){
+
+                    if(!(mostRecentAnnounceMessage.clockidentity in transparentclocks)){
+
+                        transparentclocks[mostRecentAnnounceMessage.clockidentity] = mostRecentAnnounceMessage.GMClockIdentity;
+
+                    }
+
+                } else {
+
+                    if (!(mostRecentAnnounceMessage.clockidentity in boundaryclocks)){
+
+                        boundaryclocks[mostRecentAnnounceMessage.clockidentity] =  mostRecentAnnounceMessage.GMClockIdentity;
+                    }
+                }
+
                 return (
 
                     <div className = "container Announce_Message_Table">
@@ -84,6 +106,47 @@ export default class Announce_Message_Table extends React.Component {
                             <TableHeaderColumn dataField="timestamp" headerAlign="center" dataAlign="center" width= "12%" isKey={true}>Timestamp</TableHeaderColumn>
                         </BootstrapTable>
                     </div>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                         <table className="table table-bordered">
+                            <thead>
+                            <tr><th>Transparent Clocks</th><th>Boundary Clocks</th></tr>
+                            </thead>
+                            <tbody>
+                            <td style={{valign: 'top'}}>
+                                <ul>
+                                { Object.keys(transparentclocks).map(function(clock){
+
+                                    return(
+
+                                        <li><p>Clock ID: {clock}</p><p>GMClock ID: {transparentclocks[clock]}</p></li>
+
+                                    )
+
+                                })}
+                                </ul>
+
+                            </td>
+                            <td style={{valign: 'top'}}>
+                                <ul>
+                                { Object.keys(boundaryclocks).map(function(clock){
+
+                                    return(
+
+                                        <li><p>Clock ID: {clock}</p><p>GMClock ID: {boundaryclocks[clock]}</p></li>
+                                        
+                                    )
+
+                                })}
+                                </ul>
+
+                            </td>
+
+                            </tbody>
+                        </table>
+
                     </div>
 
                 )
