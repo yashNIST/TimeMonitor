@@ -15,6 +15,10 @@ let FormControl = ReactBootstrap.FormControl;
 
 export default class NavigationBar extends React.Component{
 
+    shouldComponentUpdate(nextProps) {
+        return (nextProps.data !== this.props.data);
+    }
+
     render() {
 
         return (
@@ -22,7 +26,7 @@ export default class NavigationBar extends React.Component{
             <Navbar inverse collapseOnSelect>
            <Navbar.Header>
             <Navbar.Brand componentClass="span">
-              <Link activeClass="active" to="/">Timing Testbed Dashboard</Link>
+              <Link to="/">Timing Testbed Dashboard</Link>
             </Navbar.Brand>
            <Navbar.Toggle />
            </Navbar.Header>
@@ -47,20 +51,9 @@ export default class NavigationBar extends React.Component{
                   <NavItem>Multicast MAC Address</NavItem>
                   </LinkContainer>
               </NavDropdown>
-              <NavDropdown title="Rest API" id="REST Dropdown">
-                  <LinkContainer to="/All_Announce_Messages/">
-                   <NavItem>All Announce Messages</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/All_PDelay_Messages/">
-                   <NavItem>All PDelay Messages</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/Individual_Announce_Messages/1">
-                      <NavItem>Individual Announce Messages</NavItem>
-                  </LinkContainer>
-                  <LinkContainer to="/Individual_PDelay_Messages/1">
-                      <NavItem>Individual PDelay Messages</NavItem>
-                  </LinkContainer>
-              </NavDropdown>
+                <LinkContainer to="/RESTAPI" >
+                <NavItem>REST API</NavItem>
+                </LinkContainer>
             </Nav>
                <Navbar.Form pullRight>
                     <FormGroup>
@@ -80,3 +73,4 @@ export default class NavigationBar extends React.Component{
 
 
  */
+
