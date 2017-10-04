@@ -23,7 +23,6 @@ to setup postgres (MACOSX):
     grant privileges for the database to this user ( GRANT ALL PRIVILEGES ON DATABASE timing_testbed TO kgb;)
     run:  python(3) manage.py makemigrations
     run:  python(3) manage.py migrate
-    npm install
     
     
 to run dashboard:
@@ -31,6 +30,8 @@ to run dashboard:
     manage.py shell  (if you need to test whether django is connecting to your database)
     manage.py makemigrations Dashboard     (once you have your database set up and connecting to django)
     manage.py migrate Dashboard      (to generate sql code in your database to make your tables based on your models)
-    run:  node_modules/.bin/webpack --config webpack.local.config.js to create bundle for webpack to run in django
-    manage.py runserver ( to run the django web server)
-    node server.js  (to run the webpack-connected server to enable hot-reloading)
+    pip(3) install -U -r requirements.txt               (install dependencies for django)
+    npm install                                         (install dependencies for react)
+    node_modules/.bin/webpack --config webpack.local.config.js       (to create bundle for webpack to run in django)
+    manage.py runserver                                              (to run the django web server)
+    node server.js                  (run in different tab/window to run the webpack-connected server to enable hot-reloading)
