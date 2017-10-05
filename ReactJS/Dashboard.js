@@ -42,7 +42,7 @@ var Dashboard = React.createClass({
     loadAnnounce_MessagesFromServer(){
 
         $.ajax({
-            url: "All_Announce_Messages",
+            url: "api/All_Announce_Messages",
             datatype: 'json',
             cache: false,
             success: function(announcemessages) {
@@ -56,7 +56,7 @@ var Dashboard = React.createClass({
     loadPDelay_MessagesFromServer(){
 
         $.ajax({
-            url: "All_PDelay_Messages",
+            url: "api/All_PDelay_Messages",
             datatype: 'json',
             cache: false,
             success: function(pdelaymessages) {
@@ -68,6 +68,7 @@ var Dashboard = React.createClass({
     },
 
     getInitialState() {
+
         return {AnnounceMessages: [], PDelayMessages: []};
     },
 
@@ -75,11 +76,16 @@ var Dashboard = React.createClass({
 
         //this.loadAnnounce_MessagesFromServer();
         //this.loadPDelay_MessagesFromServer();
-        setInterval(this.loadAnnounce_MessagesFromServer, 1000);
-        setInterval(this.loadPDelay_MessagesFromServer, 1000);
+        var getMessages = function(){
 
+            this.loadPDelay_MessagesFromServer();
+            this.loadAnnounce_MessagesFromServer();
+            setTimeout(getMessages, 1000);
+
+        }.bind(this);
+
+        setTimeout(getMessages, 0);
     },
-
 
     render() {
 
@@ -137,4 +143,3 @@ componentDidMount() {
   children: React.PropTypes.object.isRequired
 
 };*/
-
