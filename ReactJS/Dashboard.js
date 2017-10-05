@@ -39,32 +39,26 @@ let store = finalCreateStore(reducer)
 
 var Dashboard = React.createClass({
 
-    loadAnnounce_MessagesFromServer(){
+    loadMessagesFromServer(){
 
-        $.ajax({
-            url: "api/All_Announce_Messages",
-            datatype: 'json',
-            cache: false,
-            success: function(announcemessages) {
+        $.when(
+
+            $.get("api/All_Announce_Messages", function (announcemessages){
+
                 this.setState({
                     AnnounceMessages: ((announcemessages.length > 1800) ? announcemessages.slice(announcemessages.length - 1801, announcemessages.length -1): announcemessages),
                 });
-            }.bind(this)
-        })
-    },
 
-    loadPDelay_MessagesFromServer(){
+            }.bind(this)),
 
-        $.ajax({
-            url: "api/All_PDelay_Messages",
-            datatype: 'json',
-            cache: false,
-            success: function(pdelaymessages) {
+            $.get("api/All_PDelay_Messages", function (pdelaymessages){
+
                 this.setState({
                     PDelayMessages: ((pdelaymessages > 1800) ? pdelaymessages.slice(pdelaymessages.length - 1801, pdelaymessages.length -1) : pdelaymessages),
                 });
-            }.bind(this)
-        })
+            }.bind(this))
+        )
+
     },
 
     getInitialState() {
@@ -74,17 +68,15 @@ var Dashboard = React.createClass({
 
     componentDidMount() {
 
-        //this.loadAnnounce_MessagesFromServer();
-        //this.loadPDelay_MessagesFromServer();
         var getMessages = function(){
 
-            this.loadPDelay_MessagesFromServer();
-            this.loadAnnounce_MessagesFromServer();
+            this.loadMessagesFromServer();
             setTimeout(getMessages, 1000);
 
         }.bind(this);
 
         setTimeout(getMessages, 0);
+
     },
 
     render() {
