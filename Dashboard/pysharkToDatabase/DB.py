@@ -1,31 +1,21 @@
-import os
-import sys
-import django
-sys.path.append('/Users/kgb/PycharmProjects/Timing_Testbed_Dashboard')
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Timing_Testbed_Dashboard.settings')
-django.setup()
-
 from ..models import Announce_Message, Path_Delay_Request_Message
 import pyshark
-import threading
+import multiprocessing
 from ..pysharkToDatabase import PyShark_Capture
 
-
-class StartApp(object):
-
-    current_packet = 0
+class StartApp:
 
     def __init__(self, interval=1):
 
         self.interval = interval
-        thread = threading.Thread(target=self.run, args=())
-        thread.daemon = True
-        thread.start()
+        snifferAnnounce = multiprocessing.Process(target=self.sniffPTPMessages, args=())
+        snifferAnnounce.daemon = True
+        snifferAnnounce.start()
 
-    def run(self):
+    def sniffPTPMessages(self):
 
-        #capture = pyshark.LiveCapture(interface='en5')
-        capture = pyshark.FileCapture('P2P_UDP_170913_Tests4.1_4.2_4.4_4.7.1.pcap')
+        #capture = pyshark.LiveCapture(interface='en5').sniff_continuously()
+        capture = pyshark.FileCapture('/Users/kgb/Desktop/BMCA_P2P_MultiDomain2.pcapng')
 
         for packet in capture:
 
@@ -33,7 +23,7 @@ class StartApp(object):
 
                 if PyShark_Capture.get_message_type(packet) == 'Announce Message':
 
-                    announce = Announce_Message(
+                    Announce_Message.objects.get_or_create(
 
                         clockidentity=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.clockidentity'),
                         messageid=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.messageid'),
@@ -64,7 +54,7 @@ class StartApp(object):
                         ETH_DST=PyShark_Capture.get_field(packet, 'eth', 'eth.dst'),
                         SRC_PORT=PyShark_Capture.get_field(packet, 'udp', 'udp.srcport'),
                         DST_PORT=PyShark_Capture.get_field(packet, 'udp', 'udp.dstport'),
-                        sniff_timestamp=packet.sniff_timestamp,
+                        sniff_timestamp=float(packet.sniff_timestamp),
                         sequence_id=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.sequenceid'),
                         GMClockIdentity=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.grandmasterclockidentity'),
                         localstepsremoved=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.an.localstepsremoved'),
@@ -86,19 +76,9 @@ class StartApp(object):
                         ATOI_DisplayNameLength=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.an.atoi.displayName.length')
                     )
 
+                    if PyShark_Capture.get_message_type(packet) == 'Path Delay Request':
 
-                    if Announce_Message.objects.filter(sniff_timestamp=packet.sniff_timestamp).exists():
-
-                        pass
-
-                    else:
-
-                        announce.save()
-
-
-                if PyShark_Capture.get_message_type(packet) == 'Path Delay Request':
-
-                        p_delay_request = Path_Delay_Request_Message(
+                        Path_Delay_Request_Message.objects.get_or_create(
 
                             clockidentity=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.clockidentity'),
                             messageid=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.messageid'),
@@ -118,29 +98,19 @@ class StartApp(object):
                             correction_subns=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.correction.subns'),
                             control=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.control'),
                             logmessageperiod=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.logmessageperiod'),
-                            origintimestampseconds=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.pdrq.origintimestamp.seconds'),
-                            origintimestampnanoseconds=PyShark_Capture.get_field(packet, 'ptp','ptp.v2.pdrq.origintimestamp.nanoseconds'),
+                            origintimestampseconds=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.pdrq.origintimestamp.seconds'),
+                            origintimestampnanoseconds=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.pdrq.origintimestamp.nanoseconds'),
                             IP_SRC=PyShark_Capture.get_ip(packet, 'src'),
                             IP_DST=PyShark_Capture.get_ip(packet, 'dst'),
                             ETH_SRC=PyShark_Capture.get_field(packet, 'eth', 'eth.src'),
                             ETH_DST=PyShark_Capture.get_field(packet, 'eth', 'eth.dst'),
-                            sniff_timestamp=packet.sniff_timestamp,
+                            sniff_timestamp=float(packet.sniff_timestamp),
                             sequence_id=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.sequenceid'),
                             sourceport_id=PyShark_Capture.get_field(packet, 'ptp', 'ptp.v2.sourceportid'),
                         )
-
-                        if Path_Delay_Request_Message.objects.filter(sniff_timestamp=packet.sniff_timestamp).exists():
-
-                            pass
-
-                        else:
-
-                            p_delay_request.save()
-
 
 
             except AttributeError:
 
                 pass
-
 
