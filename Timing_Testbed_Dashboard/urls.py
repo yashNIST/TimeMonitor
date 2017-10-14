@@ -16,13 +16,24 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.views.generic import TemplateView
 from Dashboard.pysharkToDatabase.DB import StartApp
+
 
 read = StartApp()
 
 urlpatterns = [
 
-    url(r'^', include('Dashboard.urls', namespace='Dashboard')),
+    url(r'^api/', include('Dashboard.urls')),
     url(r'^admin/', admin.site.urls),
+
+]
+
+urlpatterns += staticfiles_urlpatterns()
+
+urlpatterns += [
+
+    url(r'', TemplateView.as_view(template_name='Dashboard.html')),
 
 ]
