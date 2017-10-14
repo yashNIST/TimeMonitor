@@ -1,5 +1,5 @@
 
-ReactJS + Redux + Django Dashboard for Timing Testbed Monitoring
+ReactJS + Django Dashboard for Timing Testbed Monitoring
 
 Dependencies: 
 
