@@ -93,15 +93,36 @@ export default class Announce_Message_Table extends React.Component {
 
                 if (!(mostRecentAnnounceMessage.clockidentity in transparentclocks)) {
 
-                    transparentclocks[mostRecentAnnounceMessage.clockidentity] = mostRecentAnnounceMessage.GMClockIdentity;
+                    transparentclocks[mostRecentAnnounceMessage.clockidentity] = mostRecentAnnounceMessage;
 
+                }
+                else{
+
+                    for(let tclock in transparentclocks) {
+
+                        if (mostRecentAnnounceMessage.sniff_timestamp - transparentclocks[tclock].sniff_timestamp > 60) {
+
+                            delete(transparentclocks[tclock])
+                        }
+                    }
                 }
 
             } else {
 
                 if (!(mostRecentAnnounceMessage.clockidentity in boundaryclocks)) {
 
-                    boundaryclocks[mostRecentAnnounceMessage.clockidentity] = mostRecentAnnounceMessage.GMClockIdentity;
+                    boundaryclocks[mostRecentAnnounceMessage.clockidentity] = mostRecentAnnounceMessage;
+                }
+                else{
+
+                    for(let bclock in boundaryclocks) {
+
+                        if (mostRecentAnnounceMessage.sniff_timestamp - boundaryclocks[bclock].sniff_timestamp > 60) {
+
+                            delete(boundaryclocks[bclock])
+                        }
+                    }
+
                 }
             }
 
@@ -137,8 +158,8 @@ export default class Announce_Message_Table extends React.Component {
                     <table className="table table-bordered">
                         <thead>
                         <tr>
-                            <th>Transparent Clocks</th>
-                            <th>Boundary Clocks</th>
+                            <th style = {{textAlign:'center'}}>Transparent Clocks</th>
+                            <th style = {{textAlign:'center'}}>Boundary Clocks</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -148,7 +169,7 @@ export default class Announce_Message_Table extends React.Component {
 
                                     return (
 
-                                        <li><p>Clock ID: {clock}</p><p>GMClock ID: {transparentclocks[clock]}</p></li>
+                                        <li><p style = {{textAlign:'center' , backgroundColor: 'green', color: 'whitesmoke'}}>Clock ID: {clock}</p><p style = {{textAlign:'center', backgroundColor: 'green', color: 'whitesmoke'}}>GMClock ID: {transparentclocks[clock].GMClockIdentity}</p></li>
 
                                     )
 
@@ -162,7 +183,7 @@ export default class Announce_Message_Table extends React.Component {
 
                                     return (
 
-                                        <li><p>Clock ID: {clock}</p><p>GMClock ID: {boundaryclocks[clock]}</p></li>
+                                        <li><p style = {{textAlign:'center', backgroundColor: 'blue', color: 'whitesmoke'}}>Clock ID: {clock}</p><p style = {{textAlign:'center', backgroundColor: 'blue', color: 'whitesmoke'}}>GMClock ID: {boundaryclocks[clock].GMClockIdentity}</p></li>
 
                                     )
 
