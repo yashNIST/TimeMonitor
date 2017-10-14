@@ -14,7 +14,6 @@ import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-print(BASE_DIR)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -127,7 +126,7 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
     #This lets Django's collectstatic store our bundles
-    os.path.join(BASE_DIR, '../../ReactJS'),
+    os.path.join(BASE_DIR, 'Dashboard/static'),
 )
 
 WEBPACK_LOADER = {
