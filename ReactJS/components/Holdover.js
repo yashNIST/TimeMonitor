@@ -12,6 +12,10 @@ var startRecovery = 0;
 var recovery = '';
 var startRecoveryTime = 0;
 var endRecoveryTime = 0;
+var classtest = '';
+
+var startGPSUnlock = 0;
+var GPSLock = '';
 
 import { input_code } from '../middleware/input_functions'
 
@@ -27,9 +31,9 @@ export default class Holdover extends React.Component {
         let mostRecentAnnounceMessage = {
             'clockidentity': data['clockidentity'],
             'GMClockID': data['GMClockIdentity'],
-            'GMClockClass': input_code(data['GMClockClass'], 'clockclass') + ' ( '  + data['GMClockClass'].toString() + ' )',
+            'GMClockClass': data['GMClockClass'],
             'GMClockVariance': data['GMClockVariance'],
-            'GMClockAccuracy': input_code(data['GMClockAccuracy'], 'clockaccuracy'),
+            'GMClockAccuracy': data['GMClockAccuracy'],
             'Ethernet': data['ETH_DST'],
             'time_traceable': data['timetraceable'],
             'frequency_traceable': data['frequencytraceable'],
@@ -44,6 +48,23 @@ export default class Holdover extends React.Component {
         startRecovery = result[1];
         holdover = result[2];
         recovery = result[3];
+        classtest = classTest(data['GMClockClass'], data['GMClockAccuracy'], mostRecentAnnounceMessage);
+        mostRecentAnnounceMessage.GMClockClass = input_code(mostRecentAnnounceMessage.GMClockClass, 'clockclass') + ' ( ' + mostRecentAnnounceMessage.GMClockClass + ' ) ' + '  ( ' + classtest + ' ) ';
+        mostRecentAnnounceMessage.GMClockAccuracy = input_code(mostRecentAnnounceMessage.GMClockAccuracy, 'clockaccuracy');
+
+        if(parseInt(data['GMClockClass']) !== 6 && startGPSUnlock === 0){
+
+            startGPSUnlock = mostRecentAnnounceMessage.timestamp;
+        }
+        else if(parseInt(data['GMClockClass']) !== 6){
+
+            GPSLock = 'The last time GPS was locked was ' + (mostRecentAnnounceMessage.timestamp - startGPSUnlock) + ' seconds ago';
+        }
+        else{
+
+            startGPSUnlock = 0;
+        }
+
 
         return(
 
@@ -65,7 +86,7 @@ export default class Holdover extends React.Component {
                         </tr>
                         <tr>
                             <td>GMClockClass:</td>
-                            <td>{ mostRecentAnnounceMessage.GMClockClass }</td>
+                            <td>{ mostRecentAnnounceMessage.GMClockClass}</td>
                         </tr>
                         <tr>
                             <td>GMClockAccuracy:</td>
@@ -103,6 +124,10 @@ export default class Holdover extends React.Component {
                             <td>Recovery:</td>
                             <td>{ recovery }</td>
                         </tr>
+                        <tr>
+                            <td>Last GPS Lock:</td>
+                            <td>{ GPSLock }</td>
+                        </tr>
                         </tbody>
 
                     </table>
@@ -112,6 +137,31 @@ export default class Holdover extends React.Component {
     }
 }
 
+function classTest(clockclass, clockaccuracy, mostRecentAnnounceMessage){
+
+    if(clockclass === 6 && clockaccuracy < 34){
+
+        return('Clock Class switched to ' + clockclass);
+
+    } else {
+
+        if (clockclass === 7 && clockaccuracy <= 34) {
+
+            return ('Clock Class switched to ' + clockclass);
+
+        } else if (clockclass === 52 && clockaccuracy === 35) {
+
+            return ('Clock Class switched to ' + clockclass);
+
+        } else if (clockclass === 187 && clockaccuracy > 35) {
+
+            return ('Clock Class switched to ' + clockclass);
+        }
+
+        return ('Clock Class Failed to Switch on Change in Clock Accuracy');
+
+    }
+}
 
 function Holdover_Test(startHoldover, startRecovery,  mostRecentAnnounceMessage, classcode){
 
@@ -129,7 +179,7 @@ function Holdover_Test(startHoldover, startRecovery,  mostRecentAnnounceMessage,
         endHoldoverTime = mostRecentAnnounceMessage.timestamp;
         if((endHoldoverTime - startHoldoverTime) >= 5){
 
-            holdover = 'Clock Stayed Within 250 us   [ ' +  (endHoldoverTime - startHoldoverTime) + ' seconds ]';
+            holdover = 'Clock Stayed Within 250 ns   [ ' +  (endHoldoverTime - startHoldoverTime) + ' seconds ]';
         }
         startHoldover = 0;
     }
