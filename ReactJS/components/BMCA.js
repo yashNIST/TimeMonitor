@@ -4,7 +4,6 @@
 
 import { input_code } from '../middleware/input_functions';
 import { RUN_BMCA } from '../middleware/runBMCA';
-import { reset } from '../middleware/resetPacket';
 import expandableTableCell from "./expandableTableCell";
 
 var React = require('react');
@@ -70,20 +69,20 @@ export default class BMCA extends React.Component {
 
             return(
                 <div>
-                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', border: 'none'}}>Domain: {subdomain}</td>
+                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', border: 'none'}}>{'Domain: ' + subdomain}</td>
 
                         <tr>
                             {Object.keys(allClocksDict[subdomain]).map(function(port){
 
                                 return(
                                     <div>
-                                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', border: 'none'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke',  border: 'none'}}>Port: {port}</td>
+                                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', border: 'none'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke',  border: 'none'}}>{'Port: ' + port}</td>
                                             <tr>
                                             {Object.keys(allClocksDict[subdomain][port]).map(function(clock){
 
                                                 return(
                                                         <tr>
-                                                            <td style={{ backgroundColor: 'orangered', color: 'whitesmoke' , borderTop: 'none', borderLeft: 'none', borderRight: 'none'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke',  borderTop: 'none', borderLeft: 'none'}}></td><td>Clock ID: {clock}</td>
+                                                            <td style={{ backgroundColor: 'orangered', color: 'whitesmoke' , borderTop: 'none', borderLeft: 'none', borderRight: 'none'}}></td><td style={{ backgroundColor: 'blue', color: 'whitesmoke',  borderTop: 'none', borderLeft: 'none'}}></td><td>{'Clock ID: ' + clock}</td>
                                                         </tr>
                                                 )
 
@@ -107,11 +106,11 @@ export default class BMCA extends React.Component {
                 return (
                     <div>
                         <tr>
-                        <td style={{ backgroundColor: 'orangered', color: 'whitesmoke'}}> Domain: {subdomain} </td>
+                        <td style={{ backgroundColor: 'orangered', color: 'whitesmoke'}}>{'Domain: ' + subdomain} </td>
                         {Object.keys(bestClocksOnPort[subdomain]).map(function(port) {
                             return(
                            <div>
-                                <td style={{ backgroundColor: 'blue', color: 'whitesmoke'}}>Port: {port}</td><td>Clock ID: {bestClocksOnPort[subdomain][port].clockidentity}</td>
+                                <td style={{ backgroundColor: 'blue', color: 'whitesmoke'}}>{'Port: ' + port}</td><td>Clock ID: {bestClocksOnPort[subdomain][port].clockidentity}</td>
                            </div>
                             )
                         })}
@@ -126,10 +125,10 @@ export default class BMCA extends React.Component {
              return(
                  <td style={{valign: 'top', backgroundColor: 'darkgrey'}}>
                 <table className="table table-bordered">
-                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', textAlign: 'center'}}>Domain: {subdomain}</td>
+                    <td style={{ backgroundColor: 'orangered', color: 'whitesmoke', textAlign: 'center'}}>{'Domain: ' + subdomain}</td>
                         {Object.keys(bestMasterClocks[subdomain]).map(function(clock){
 
-                            lastState = bestMasterClocks[subdomain].STATE;
+                            lastState = (bestMasterClocks[subdomain].STATE !== '' && bestMasterClocks[subdomain].clockidentity === mostRecentAnnounceMessage.clockidentity) ?  bestMasterClocks[subdomain].STATE: lastState;
                                 return(
 
                                     <div>
