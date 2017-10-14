@@ -1,7 +1,8 @@
-import { render } from "react-dom"
 const React = require("react");
+import { render } from "react-dom"
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom'
 import 'babel-polyfill';
+import './Dashboard.css'
 
 import NavigationBar from "./Navbar"
 import Announce_Message_Table from "./components/Announce_Message_Table"
@@ -36,6 +37,7 @@ let reducer = combineReducers(reducers)
 let store = finalCreateStore(reducer)
 
 */
+let messageLimit = 1800;
 
 var Dashboard = React.createClass({
 
@@ -46,7 +48,7 @@ var Dashboard = React.createClass({
             $.get("api/All_Announce_Messages", function (announcemessages){
 
                 this.setState({
-                    AnnounceMessages: ((announcemessages.length > 1800) ? announcemessages.slice(announcemessages.length - 1801, announcemessages.length -1): announcemessages),
+                    AnnounceMessages: ((announcemessages.length > messageLimit) ? announcemessages.slice(announcemessages.length - (messageLimit + 1), announcemessages.length -1): announcemessages),
                 });
 
             }.bind(this)),
@@ -54,7 +56,7 @@ var Dashboard = React.createClass({
             $.get("api/All_PDelay_Messages", function (pdelaymessages){
 
                 this.setState({
-                    PDelayMessages: ((pdelaymessages > 1800) ? pdelaymessages.slice(pdelaymessages.length - 1801, pdelaymessages.length -1) : pdelaymessages),
+                    PDelayMessages: ((pdelaymessages > messageLimit) ? pdelaymessages.slice(pdelaymessages.length - (messageLimit + 1), pdelaymessages.length -1) : pdelaymessages),
                 });
             }.bind(this))
         )
@@ -71,7 +73,7 @@ var Dashboard = React.createClass({
         var getMessages = function(){
 
             this.loadMessagesFromServer();
-            setTimeout(getMessages, 1000);
+            setTimeout(getMessages, 500);
 
         }.bind(this);
 
@@ -135,3 +137,4 @@ componentDidMount() {
   children: React.PropTypes.object.isRequired
 
 };*/
+
