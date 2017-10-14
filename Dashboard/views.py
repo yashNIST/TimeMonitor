@@ -41,6 +41,4 @@ class P_Delay_Request_MessageListView(generic.ListView):
 
         super(P_Delay_Request_MessageListView).__init__()
         self.template_name = template_name
-
-
 '''
