@@ -19,7 +19,9 @@ module.exports = {
   ], // add all vendor libs
 
   plugins: [
-    new webpack.optimize.CommonsChunkPlugin('Timing_Testbed_Dashboard', 'Timing_Testbed_Dashboard.js'),
+
+      new webpack.optimize.CommonsChunkPlugin('Timing_Testbed_Dashboard', 'Timing_Testbed_Dashboard.js'),
+      new webpack.ProvidePlugin({ 'jQuery': 'jquery', '$': 'jquery',})
   ], // add all common plugins here
 
   module: {
