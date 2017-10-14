@@ -2,11 +2,16 @@ from django.db import models
 
 class Announce_Message(models.Model):
 
+    class Meta:
+
+        unique_together = (('id', 'sniff_timestamp'),)
+
+
     clockidentity = models.CharField(max_length=200, default='')
     sniff_timestamp = models.FloatField(default=0.0, unique=True)
     control = models.IntegerField(default=0, null=True)
     messageid = models.IntegerField(default=0, null = True)
-    sequence_id = models.IntegerField(default=0)
+    sequence_id = models.IntegerField(default=0, null=True)
     IP_SRC = models.CharField(max_length=200, null=True)
     IP_DST = models.CharField(max_length=200, null=True)
     ETH_SRC = models.CharField(max_length=200)
@@ -68,6 +73,10 @@ class Announce_Message(models.Model):
 
 class Path_Delay_Request_Message(models.Model):
 
+    class Meta:
+
+        unique_together = (('id', 'sniff_timestamp'),)
+
     clockidentity = models.CharField(max_length=200, default='')
     sniff_timestamp = models.FloatField(default=0.0, unique=True)
     control = models.IntegerField(default=0, null=True)
@@ -98,4 +107,5 @@ class Path_Delay_Request_Message(models.Model):
     version_ptp = models.IntegerField(default=0, null=True)
 
 # Create Path Delay Request Model for Multicast MAC Address Test
+
 
